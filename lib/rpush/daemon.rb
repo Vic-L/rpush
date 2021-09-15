@@ -79,23 +79,33 @@ module Rpush
 
     def self.start
       Process.daemon if daemonize?
+      STDOUT.write("Process.daemon if daemonize?\n")
       write_pid_file
+      STDOUT.write("write_pid_file\n")
       SignalHandler.start
+      STDOUT.write("SignalHandler.start\n")
       common_init
+      STDOUT.write("common_init\n")
       Synchronizer.sync
+      STDOUT.write("Synchronizer.sync\n")
       Rpc::Server.start
+      STDOUT.write("Rpc::Server.start\n")
 
       # No further store connections will be made from this thread.
       store.release_connection
+      STDOUT.write("store.release_connection\n")
 
       Rpush.logger.info('Rpush operational.')
       show_welcome_if_needed
+      STDOUT.write("show_welcome_if_needed\n")
 
       # Blocking call, returns after Feeder.stop is called from another thread.
       Feeder.start
+      STDOUT.write("Feeder.start\n")
 
       # Wait for shutdown to complete.
       shutdown_lock.synchronize { true }
+      STDOUT.write("shutdown_lock.synchronize\n")
     end
 
     def self.shutdown
